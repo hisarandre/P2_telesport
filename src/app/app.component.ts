@@ -11,6 +11,7 @@ export class AppComponent implements OnInit {
   constructor(private olympicService: OlympicService) {}
 
   ngOnInit(): void {
+    // TODO: handle error in the subscribe
     this.olympicService.loadInitialData().pipe(take(1)).subscribe();
   }
 }
