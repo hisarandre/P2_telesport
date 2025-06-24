@@ -1,0 +1,14 @@
+@if (data) {
+  <ngx-charts-pie-chart
+    [results]="data"
+    [labels]="showChartLabels"
+    (select)="onSelect($event)"
+  >
+    <ng-template #tooltipTemplate let-model="model">
+      <div class="text-lg px-4 py-2">
+        <p>{{ model.name }}</p>
+        <p>🏅 {{ model.value }}</p>
+      </div>
+    </ng-template>
+  </ngx-charts-pie-chart>
+}
