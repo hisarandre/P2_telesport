@@ -6,6 +6,31 @@
 
 @layer base {
   h1 {
-    @apply text-4xl font-bold text-blue-600;
+    @apply bg-teal-700 text-white text-3xl px-4 py-2 rounded-lg inline-block text-center;
   }
+
+  h2 {
+    @apply text-gray-600 pb-1;
+  }
+
+  main {
+    @apply flex flex-col w-full justify-center items-center min-h-screen p-8 gap-8;
+  }
+
+}
+
+ngx-tooltip-content.ngx-charts-tooltip-content.type-tooltip {
+  color: white;
+  background-color: #0F766E;
+
+  .tooltip-caret.position-top {
+    border-top-color: #0F766E;
+    border-top-width: 20px !important;
+    border-left-width: 15px !important;
+    border-right-width: 15px !important;
+  }
+}
+
+.pie-label {
+  font-size: 1.2rem !important;
 }

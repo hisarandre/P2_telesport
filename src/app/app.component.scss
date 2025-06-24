@@ -1,0 +1,9 @@
+.spinner {
+  @apply w-10 h-10 border-4 border-gray-200 border-t-teal-700 rounded-full mb-5;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
