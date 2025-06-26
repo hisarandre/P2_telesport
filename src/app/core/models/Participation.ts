@@ -5,5 +5,6 @@ export class Participation {
     public city: string,
     public medalsCount: number,
     public athleteCount: number
-  ) {}
+  ) {
+  }
 }

@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
-import { OlympicService } from 'src/app/core/services/olympic.service';
-import { ChartService } from 'src/app/core/services/chart.service';
-import { Olympic } from '../../core/models/Olympic';
-import { Participation } from '../../core/models/Participation';
-import { LineChart } from '../../core/models/LineChart';
-import { StatCardComponent } from '../../components/stat-card/stat-card.component';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LineChartComponent } from '../../components/line-chart/line-chart.component';
-import { LucideAngularModule, ArrowLeft  } from 'lucide-angular';
+import {Component, OnInit} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {catchError, map, tap} from 'rxjs/operators';
+import {OlympicService} from 'src/app/core/services/olympic.service';
+import {ChartService} from 'src/app/core/services/chart.service';
+import {Olympic} from '../../core/models/Olympic';
+import {Participation} from '../../core/models/Participation';
+import {LineChart} from '../../core/models/LineChart';
+import {StatCardComponent} from '../../components/stat-card/stat-card.component';
+import {CommonModule} from '@angular/common';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {LineChartComponent} from '../../components/line-chart/line-chart.component';
+import {ArrowLeft, LucideAngularModule} from 'lucide-angular';
 
 @Component({
   selector: 'app-detail',
@@ -26,22 +26,23 @@ import { LucideAngularModule, ArrowLeft  } from 'lucide-angular';
   styleUrls: ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit {
-  public chartData$: Observable<LineChart[]> = of([]);
-  public countryData$: Observable<Olympic | null> = of(null);
-  public entriesCount$: Observable<number> = of(0);
-  public medalsCount$: Observable<number> = of(0);
-  public athletesCount$: Observable<number> = of(0);
+  chartData$: Observable<LineChart[]> = of([]);
+  countryData$: Observable<Olympic | null> = of(null);
+  entriesCount$: Observable<number> = of(0);
+  medalsCount$: Observable<number> = of(0);
+  athletesCount$: Observable<number> = of(0);
 
   countryId!: number;
 
-  readonly ArrowLeft = ArrowLeft  ;
+  ArrowLeft = ArrowLeft;
 
   constructor(
     private olympicService: OlympicService,
     private chartService: ChartService,
     private readonly route: ActivatedRoute,
     private readonly router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.initData();
@@ -50,12 +51,11 @@ export class DetailComponent implements OnInit {
   initData(): void {
     this.countryId = Number(this.route.snapshot.params["id"]);
 
-    // Use this.countryData$ without shareReplay
     this.countryData$ = this.olympicService.getCountryById(this.countryId).pipe(
       tap(country => {
         if (!country) {
           console.error('Country not found');
-          this.router.navigate(['/']); // Redirect if country not found
+          this.router.navigate(['/']);
         }
       }),
       catchError((error) => {
@@ -65,7 +65,6 @@ export class DetailComponent implements OnInit {
       })
     );
 
-    // Transform chart data - Fix: Use this.countryData$
     this.chartData$ = this.countryData$.pipe(
       map(country => {
         if (!country?.participations) return [];
@@ -77,12 +76,10 @@ export class DetailComponent implements OnInit {
       })
     );
 
-    // Calculate entries count - Fix: Use this.countryData$
     this.entriesCount$ = this.countryData$.pipe(
       map(country => country?.participations?.length || 0)
     );
 
-    // Calculate total medals count
     this.medalsCount$ = this.countryData$.pipe(
       map(country =>
         country?.participations?.reduce((sum: number, participation: Participation) =>
@@ -91,7 +88,6 @@ export class DetailComponent implements OnInit {
       )
     );
 
-    // Calculate total athletes count
     this.athletesCount$ = this.countryData$.pipe(
       map(country =>
         country?.participations?.reduce((sum: number, participation: Participation) =>
