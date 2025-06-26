@@ -31,11 +31,11 @@
   <section class="w-full h-96 md:h-96 lg:h-[450px] overflow-hidden">
     @if (chartData$ | async; as data) {
       @if (data && data.length > 0) {
-      <app-line-chart [data]="data" />
+        <app-line-chart [data]="data"/>
       } @else {
-      <div class="flex items-center justify-center h-full">
-        <p class="text-gray-500 text-lg">No data available</p>
-      </div>
+        <div class="flex items-center justify-center h-full">
+          <p class="text-gray-500 text-lg">No data available</p>
+        </div>
       }
     }
   </section>

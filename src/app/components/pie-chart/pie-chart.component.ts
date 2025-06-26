@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { PieChart } from '../../core/models/PieChart';
-import { Router } from '@angular/router';
-import { LucideAngularModule, Medal  } from 'lucide-angular';
+import {Component, Input} from '@angular/core';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {PieChart} from '../../core/models/PieChart';
+import {Router} from '@angular/router';
+import {LucideAngularModule, Medal} from 'lucide-angular';
 
 @Component({
   selector: 'app-pie-chart',
@@ -14,14 +14,15 @@ import { LucideAngularModule, Medal  } from 'lucide-angular';
 export class PieChartComponent {
   @Input() data!: PieChart[];
 
-  public showChartLabels: boolean = true;
-  readonly medal = Medal ;
+  showChartLabels: boolean = true;
+  medal = Medal;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+  }
 
-  onSelect(data: PieChart) : void {
-      if (data?.extra?.id) {
-        this.router.navigate(['/detail', data.extra.id]);
-      }
+  onSelect(data: PieChart): void {
+    if (data?.extra?.id) {
+      this.router.navigate(['/detail', data.extra.id]);
     }
+  }
 }
