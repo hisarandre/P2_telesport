@@ -4,6 +4,7 @@ import { OlympicService } from './core/services/olympic.service';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
+
 @Component({
   selector: 'app-root',
   standalone: true,

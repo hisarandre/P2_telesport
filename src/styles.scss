@@ -3,7 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   h1 {
     @apply bg-teal-700 text-white text-3xl px-4 py-2 rounded-lg inline-block text-center;
@@ -24,13 +23,31 @@ ngx-tooltip-content.ngx-charts-tooltip-content.type-tooltip {
   background-color: #0F766E;
 
   .tooltip-caret.position-top {
-    border-top-color: #0F766E;
-    border-top-width: 20px !important;
-    border-left-width: 15px !important;
-    border-right-width: 15px !important;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 20px solid #0F766E;
+  }
+
+  .tooltip-caret.position-right {
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 20px solid #0F766E;
+  }
+
+  .tooltip-caret.position-left {
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 20px solid #0F766E;
   }
 }
 
 .pie-label {
   font-size: 1.2rem !important;
 }
+

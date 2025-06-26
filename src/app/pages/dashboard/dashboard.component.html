@@ -4,7 +4,7 @@
   <section class="flex w-full justify-center items-center flex-wrap gap-4">
     <app-stat-card
       label="Number of JOs"
-      [count]="(totalJOs$ | async) ?? 0"
+      [count]="(JOsCount$ | async) ?? 0"
     />
     <app-stat-card
       label="Number of countries"

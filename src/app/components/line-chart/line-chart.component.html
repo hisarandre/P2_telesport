@@ -1,0 +1,26 @@
+<ngx-charts-line-chart
+  [showXAxisLabel]="showXAxisLabel"
+  [xAxis]="xAxis"
+  [yAxis]="yAxis"
+  [xAxisLabel]="xAxisLabel"
+  [scheme]="colorScheme"
+  [results]="data"
+>
+
+  <ng-template #tooltipTemplate let-model="model">
+    <div class="flex flex-col items-center text-lg px-4 py-2">
+      <p>{{ model.name }}</p>
+      <p class="flex items-center gap-1">
+        <lucide-icon [img]="medal" class="w-4 h-4"></lucide-icon>
+        {{ model.value }}
+      </p>
+    </div>
+  </ng-template>
+
+  <ng-template #seriesTooltipTemplate let-model="model">
+    <p class="flex items-center gap-1 px-4 py-2">
+      <lucide-icon [img]="medal" class="w-4 h-4"></lucide-icon>
+      {{ model[0].value }}
+    </p>
+  </ng-template>
+</ngx-charts-line-chart>

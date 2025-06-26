@@ -1,5 +1,9 @@
 export interface PieChart {
-  id: number;
+  extra: ExtraPieChart;
   name: string;
   value: number;
+}
+
+export interface ExtraPieChart {
+  id: number;
 }
