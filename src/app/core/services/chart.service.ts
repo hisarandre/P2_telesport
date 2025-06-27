@@ -3,18 +3,7 @@ import {Injectable} from '@angular/core';
 import {Participation} from '../models/Participation';
 import {PieChart} from '../models/PieChart';
 import {LineChart, LineChartSeries} from '../models/LineChart';
-
-export interface CountryMedals {
-  country: string;
-  totalMedals: number;
-  id: number;
-}
-
-export interface CountryParticipation {
-  country: string;
-  participations: Participation[];
-  id: number;
-}
+import {Olympic} from "../models/Olympic";
 
 @Injectable({
   providedIn: 'root',
@@ -24,27 +13,23 @@ export class ChartService {
   constructor(private http: HttpClient) {
   }
 
-  transformToPieChartData(data: CountryMedals[]): PieChart[] {
+  transformToPieChartData(data: Olympic[]): PieChart[] {
     return data.map(item => ({
       name: item.country,
-      value: item.totalMedals,
+      value: Olympic.getMedalsCount(item),
       extra: {id: item.id}
     }));
   }
 
-  transformToLineChartData(data: CountryParticipation): LineChart[] {
-    if (!data) {
-      return [];
-    }
-
-    const series: LineChartSeries[] = data.participations.map((participation: Participation): LineChartSeries => ({
+  transformToLineChartData(country: string, participations: Participation[]): LineChart[] {
+    const series: LineChartSeries[] = participations.map((participation: Participation): LineChartSeries => ({
       name: participation.year.toString(),
       value: participation.medalsCount
     }));
 
     return [{
       series: series,
-      name: data.country
+      name: country
     }];
   }
 }

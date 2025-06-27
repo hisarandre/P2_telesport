@@ -1,16 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {catchError, map, tap} from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {OlympicService} from 'src/app/core/services/olympic.service';
 import {ChartService} from 'src/app/core/services/chart.service';
-import {Olympic} from '../../core/models/Olympic';
-import {Participation} from '../../core/models/Participation';
-import {LineChart} from '../../core/models/LineChart';
-import {StatCardComponent} from '../../components/stat-card/stat-card.component';
-import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {StatCardComponent} from '../../components/stat-card/stat-card.component';
 import {LineChartComponent} from '../../components/line-chart/line-chart.component';
-import {ArrowLeft, LucideAngularModule} from 'lucide-angular';
+import {ArrowLeft, LucideAngularModule, LucideIconData} from 'lucide-angular';
+import {CommonModule} from '@angular/common';
+import {Olympic} from "../../core/models/Olympic";
+import {LineChart} from "../../core/models/LineChart";
+import {SpinnerComponent} from "../../components/spinner/spinner.component";
+import {ErrorMessageComponent} from "../../components/error-message/error-message.component";
 
 @Component({
   selector: 'app-detail',
@@ -21,20 +21,26 @@ import {ArrowLeft, LucideAngularModule} from 'lucide-angular';
     LucideAngularModule,
     StatCardComponent,
     LineChartComponent,
+    SpinnerComponent,
+    ErrorMessageComponent,
   ],
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss']
 })
-export class DetailComponent implements OnInit {
-  chartData$: Observable<LineChart[]> = of([]);
-  countryData$: Observable<Olympic | null> = of(null);
-  entriesCount$: Observable<number> = of(0);
-  medalsCount$: Observable<number> = of(0);
-  athletesCount$: Observable<number> = of(0);
+export class DetailComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription = new Subscription();
 
+  ArrowLeft: LucideIconData = ArrowLeft;
   countryId!: number;
+  countryName: string = '';
+  medalsCount: number = 0;
+  entriesCount: number = 0;
+  athletesCount: number = 0;
+  chartData: LineChart[] = [];
 
-  ArrowLeft = ArrowLeft;
+  isLoading: boolean = true;
+  hasError: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private olympicService: OlympicService,
@@ -45,55 +51,42 @@ export class DetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initData();
+    this.countryId = Number(this.route.snapshot.params["id"]);
+    this.loadData();
   }
 
-  initData(): void {
-    this.countryId = Number(this.route.snapshot.params["id"]);
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
-    this.countryData$ = this.olympicService.getCountryById(this.countryId).pipe(
-      tap(country => {
-        if (!country) {
-          console.error('Country not found');
-          this.router.navigate(['/']);
-        }
-      }),
-      catchError((error) => {
-        console.error('Error loading country data:', error);
-        this.router.navigate(['/']);
-        return of(null);
-      })
-    );
+  loadData(): void {
+    this.isLoading = true;
+    this.hasError = false;
 
-    this.chartData$ = this.countryData$.pipe(
-      map(country => {
-        if (!country?.participations) return [];
-        return this.chartService.transformToLineChartData({
-          country: country.country,
-          participations: [...country.participations].sort((a, b) => a.year - b.year),
-          id: country.id
-        });
-      })
-    );
+    const olympicSubscription = this.olympicService
+      .getCountryById(this.countryId)
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.countryName = data.country;
+            this.chartData = this.chartService.transformToLineChartData(data.country, data.participations);
+            this.medalsCount = Olympic.getMedalsCount(data);
+            this.entriesCount = Olympic.getEntriesCount(data);
+            this.athletesCount = Olympic.getAthletesCount(data);
+          } else {
+            this.router.navigate(['/404']);
+          }
 
-    this.entriesCount$ = this.countryData$.pipe(
-      map(country => country?.participations?.length || 0)
-    );
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error loading data', err);
+          this.hasError = true;
+          this.errorMessage = 'Failed to load data';
+          this.isLoading = false;
+        },
+      });
 
-    this.medalsCount$ = this.countryData$.pipe(
-      map(country =>
-        country?.participations?.reduce((sum: number, participation: Participation) =>
-          sum + (participation.medalsCount || 0), 0
-        ) || 0
-      )
-    );
-
-    this.athletesCount$ = this.countryData$.pipe(
-      map(country =>
-        country?.participations?.reduce((sum: number, participation: Participation) =>
-          sum + (participation.athleteCount || 0), 0
-        ) || 0
-      )
-    );
+    this.subscriptions.add(olympicSubscription);
   }
 }

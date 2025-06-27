@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {take} from 'rxjs';
 import {OlympicService} from './core/services/olympic.service';
 import {RouterModule} from '@angular/router';
+import {SpinnerComponent} from "./components/spinner/spinner.component";
+import {ErrorMessageComponent} from "./components/error-message/error-message.component";
 
 
 @Component({
@@ -9,6 +11,8 @@ import {RouterModule} from '@angular/router';
   standalone: true,
   imports: [
     RouterModule,
+    SpinnerComponent,
+    ErrorMessageComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -16,7 +20,8 @@ import {RouterModule} from '@angular/router';
 export class AppComponent implements OnInit {
 
   public isLoading = true;
-  public error: string | null = null;
+  public hasError = false;
+  errorMessage: string = '';
 
   constructor(private olympicService: OlympicService) {
   }
@@ -27,7 +32,8 @@ export class AppComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        this.error = error.message;
+        this.errorMessage = error.message;
+        this.hasError = true;
         this.isLoading = false;
       }
     });

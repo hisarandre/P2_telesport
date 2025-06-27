@@ -1,26 +1,32 @@
 <main>
-  <h1>Medals per Country</h1>
+  @if (isLoading) {
+    <app-spinner/>
+  } @else if (hasError) {
+    <app-error-message [message]="errorMessage"/>
+  } @else {
+    <h1>Medals per Country</h1>
 
-  <section class="flex w-full justify-center items-center flex-wrap gap-4">
-    <app-stat-card
-      label="Number of JOs"
-      [count]="(JOsCount$ | async) ?? 0"
-    />
-    <app-stat-card
-      label="Number of countries"
-      [count]="(countriesCount$ | async) ?? 0"
-    />
-  </section>
+    <!-- Stats -->
+    <section class="flex w-full justify-center items-center flex-wrap gap-4">
+      <app-stat-card
+        label="Number of JOs"
+        [count]="JOsCount"
+      />
+      <app-stat-card
+        label="Number of countries"
+        [count]="countriesCount"
+      />
+    </section>
 
-  <section class="w-full h-96 md:h-96 lg:h-[450px] overflow-hidden">
-    @if (chartData$ | async; as data) {
-      @if (data && data.length > 0) {
-        <app-pie-chart [data]="data"/>
+    <!-- Chart -->
+    <section class="w-full h-96 md:h-96 lg:h-[450px] overflow-hidden">
+      @if (chartData && chartData.length > 0) {
+        <app-pie-chart [data]="chartData"/>
       } @else {
         <div class="flex items-center justify-center h-full">
-          <p class="text-gray-500 text-lg">No data available</p>
+          <p class="text-gray-500 text-lg">No chart data available</p>
         </div>
       }
-    }
-  </section>
+    </section>
+  }
 </main>
