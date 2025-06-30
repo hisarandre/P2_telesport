@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
       next: () => {
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: Error) => {
         this.errorMessage = error.message;
         this.hasError = true;
         this.isLoading = false;

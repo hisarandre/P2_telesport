@@ -10,6 +10,7 @@ import {LineChart} from "../../core/models/LineChart";
 import {SpinnerComponent} from "../../components/spinner/spinner.component";
 import {ErrorMessageComponent} from "../../components/error-message/error-message.component";
 import {Participation} from "../../core/models/Participation";
+import {Olympic} from "../../core/models/Olympic";
 
 @Component({
     selector: 'app-detail',
@@ -65,7 +66,7 @@ export class DetailComponent implements OnInit, OnDestroy {
         const olympicSubscription = this.olympicService
             .getCountryById(this.countryId)
             .subscribe({
-                next: (data) => {
+                next: (data: Olympic | null) => {
                     if (data) {
                         this.country = data.country;
                         this.participations = data.participations;
@@ -78,7 +79,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
                     this.isLoading = false;
                 },
-                error: (err) => {
+                error: (err: Error) => {
                     console.error('Error loading data', err);
                     this.hasError = true;
                     this.errorMessage = 'Failed to load data';

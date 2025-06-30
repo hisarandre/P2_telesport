@@ -27,7 +27,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private olympicService: OlympicService,
-    private chartService: ChartService
   ) {
   }
 
@@ -46,7 +45,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const olympicSubscription = this.olympicService
       .getOlympics()
       .subscribe({
-        next: (data) => {
+        next: (data: Olympic[]) => {
           if (data && data.length > 0) {
             this.olympics = data;
             this.countriesCount = this.olympicService.getCountriesCount(data);
@@ -57,7 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
           this.isLoading = false;
         },
-        error: (err) => {
+        error: (err: Error) => {
           console.error('Error loading data', err);
           this.hasError = true;
           this.errorMessage = 'Failed to load data';
