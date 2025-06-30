@@ -1,13 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OlympicService} from 'src/app/core/services/olympic.service';
-import {ChartService} from 'src/app/core/services/chart.service';
-import {PieChart} from '../../core/models/PieChart';
 import {StatCardComponent} from '../../components/stat-card/stat-card.component';
 import {PieChartComponent} from '../../components/pie-chart/pie-chart.component';
 import {CommonModule} from '@angular/common';
 import {Subscription} from "rxjs";
 import {ErrorMessageComponent} from "../../components/error-message/error-message.component";
 import {SpinnerComponent} from "../../components/spinner/spinner.component";
+import {Olympic} from "../../core/models/Olympic";
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +18,7 @@ import {SpinnerComponent} from "../../components/spinner/spinner.component";
 export class DashboardComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
-  chartData: PieChart[] = [];
+  olympics: Olympic[] = [];
   countriesCount: number = 0;
   JOsCount: number = 0;
   isLoading: boolean = true;
@@ -49,7 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           if (data && data.length > 0) {
-            this.chartData = this.chartService.transformToPieChartData(data);
+            this.olympics = data;
             this.countriesCount = this.olympicService.getCountriesCount(data);
             this.JOsCount = this.olympicService.getJOsCount(data);
           } else {
