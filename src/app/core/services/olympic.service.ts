@@ -3,31 +3,39 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, of, tap, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Olympic} from '../models/Olympic';
-
-export interface OlympicMedals {
-  country: string;
-  medalsCount: number;
-  id: number;
-}
+import {Participation} from "../models/Participation";
 
 @Injectable({
   providedIn: 'root',
 })
 export class OlympicService {
+
   private olympicUrl = './assets/mock/olympic.json';
   private readonly olympics$: BehaviorSubject<Olympic[]> = new BehaviorSubject<Olympic[]>([]);
 
-  constructor(
-    private http: HttpClient,
-  ) {
+  constructor(private http: HttpClient) {
   }
 
+  /**
+   * Loads Olympic data from the local JSON file.
+   * Updates the BehaviorSubject.
+   * Handles HTTP errors.
+   *
+   * @returns Observable of the loaded Olympic array.
+   */
   loadInitialData(): Observable<Olympic[]> {
     return this.http.get<Olympic[]>(this.olympicUrl).pipe(
       tap((data: Olympic[]) => this.olympics$.next(data || [])),
       catchError((error: HttpErrorResponse) => {
         console.error('Error loading Olympic data:', error);
-        const message = this.getErrorMessage(error.status)
+
+        let message = 'Failed to load data';
+
+        if (error.status === 0) {
+          message = 'Unable to connect to the server. Please check your internet connection.';
+        } else if (error.status === 404) {
+          message = 'Olympic data file not found.';
+        }
 
         this.olympics$.next([]);
         return throwError(() => new Error(message));
@@ -35,10 +43,21 @@ export class OlympicService {
     );
   }
 
+  /**
+   * Returns an observable of the current Olympic dataset.
+   *
+   * @returns Observable of Olympic records.
+   */
   getOlympics(): Observable<Olympic[]> {
     return this.olympics$.asObservable();
   }
 
+  /**
+   * Finds an Olympic record by country ID.
+   *
+   * @param id - ID of the country to retrieve.
+   * @returns Observable of the matching Olympic record, or null if not found.
+   */
   getCountryById(id: number): Observable<Olympic | null> {
     return this.olympics$.pipe(
       map(olympics => olympics.find(olympic => olympic.id === id) || null),
@@ -46,29 +65,32 @@ export class OlympicService {
     );
   }
 
-  getMedalsByCountries(): Observable<OlympicMedals[]> {
-    return this.olympics$.pipe(
-      map((olympics: Olympic[]) => {
-        if (!olympics?.length) return [];
-
-        return olympics.map((olympic: Olympic) => ({
-          country: olympic.country,
-          medalsCount: Olympic.getMedalsCount(olympic),
-          id: olympic.id
-        }));
-      }),
-      catchError(() => of([]))
-    );
-  }
-
+  /**
+   * Gets the number of distinct Olympic years across all countries.
+   *
+   * @param olympics - List of Olympic records.
+   * @returns Number of unique Olympic years.
+   */
   getJOsCount(olympics: Olympic[]): number {
-    return this.getAllYears(olympics).length
+    return this.getAllYears(olympics).length;
   }
 
+  /**
+   * Gets the number of countries that have participated in the Olympics.
+   *
+   * @param olympics - List of Olympic records.
+   * @returns Number of countries.
+   */
   getCountriesCount(olympics: Olympic[]): number {
     return olympics.length;
   }
 
+  /**
+   * Gets all unique Olympic years from the dataset.
+   *
+   * @param olympics - List of Olympic records.
+   * @returns Sorted array of unique years.
+   */
   getAllYears(olympics: Olympic[]): number[] {
     return [...new Set(
       olympics.flatMap(c =>
@@ -77,18 +99,33 @@ export class OlympicService {
     )].sort((a, b) => a - b);
   }
 
-  private getErrorMessage(status: number): string {
-    switch (status) {
-      case 0:
-        return 'No internet connection';
-      case 404:
-        return 'Data not found';
-      case 500:
-        return 'Server error';
-      case 403:
-        return 'Access denied';
-      default:
-        return 'Failed to load data';
-    }
+  /**
+   * Gets the number of participations for a given country.
+   *
+   * @param olympic - Olympic record for a country.
+   * @returns Number of participations.
+   */
+  getEntriesCount(olympic: Olympic): number {
+    return olympic.participations?.length || 0;
+  }
+
+  /**
+   * Calculates the total number of medals won by a country.
+   *
+   * @param olympic - Olympic record for a country.
+   * @returns Total medal count.
+   */
+  getMedalsCount(olympic: Olympic): number {
+    return olympic.participations?.reduce((sum: number, p: Participation) => sum + (p.medalsCount || 0), 0) || 0;
+  }
+
+  /**
+   * Calculates the total number of athletes sent by a country.
+   *
+   * @param olympic - Olympic record for a country.
+   * @returns Total athlete count.
+   */
+  getAthletesCount(olympic: Olympic): number {
+    return olympic.participations?.reduce((sum: number, p: Participation) => sum + (p.athleteCount || 0), 0) || 0;
   }
 }

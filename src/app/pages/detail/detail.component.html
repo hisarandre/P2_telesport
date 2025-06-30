@@ -11,19 +11,22 @@
       </a>
     </nav>
 
-    <h1>{{ countryName }}</h1>
+    <h1>{{ country }}</h1>
 
     <!-- Stats -->
     <section class="flex w-full justify-center items-center flex-wrap gap-4">
       <app-stat-card
+        class="w-full sm:w-auto"
         label="Number of entries"
         [count]="entriesCount"
       />
       <app-stat-card
+        class="w-full sm:w-auto"
         label="Total number of medals"
         [count]="medalsCount"
       />
       <app-stat-card
+        class="w-full sm:w-auto"
         label="Total number of athletes"
         [count]="athletesCount"
       />
@@ -31,8 +34,8 @@
 
     <!-- Chart-->
     <section class="w-full h-96 md:h-96 lg:h-[450px]">
-      @if (chartData && chartData.length > 0) {
-        <app-line-chart [data]="chartData"/>
+      @if (country && participations && participations.length > 0) {
+        <app-line-chart [country]="country" [participations]="participations"/>
       } @else {
         <div class="flex items-center justify-center h-full">
           <p class="text-gray-500 text-lg">No chart data available</p>
