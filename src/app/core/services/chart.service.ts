@@ -1,22 +1,24 @@
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Participation} from '../models/Participation';
 import {PieChart} from '../models/PieChart';
 import {LineChart, LineChartSeries} from '../models/LineChart';
 import {Olympic} from "../models/Olympic";
+import {OlympicService} from "./olympic.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChartService {
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private olympicService: OlympicService,
+  ) {
   }
 
   transformToPieChartData(data: Olympic[]): PieChart[] {
     return data.map(item => ({
       name: item.country,
-      value: Olympic.getMedalsCount(item),
+      value: this.olympicService.getMedalsCount(item),
       extra: {id: item.id}
     }));
   }

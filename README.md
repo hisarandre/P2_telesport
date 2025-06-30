@@ -1,29 +1,97 @@
-# OlympicGamesStarter
+# Telesport
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.3.
+## 🏅 Description
 
-Don't forget to install your node_modules before starting (`npm install`).
+An interactive web application for visualizing Olympic Games statistics and medal data by country.
 
-## Development server
+## ✨ Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- **Dashboard** - Display general Olympics statistics
+- **Country Detail Pages** - Navigate to dedicated pages with in-depth country-specific information
+- **Interactive charts** - Visualize data through charts
+- **Error Handling** - Handle errors and redirect to a 404 page
+- **Responsive** - Optimized for desktop and mobile
 
-## Build
+##🏗️ Architecture
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```text
+src/app/
+├── components/    # Reusable UI components
+├── pages/         # Components pages used for routing
+└── core/          # Business logic 
+    ├── services/  # Data management services
+    └── models/    # Data models and interfaces
+```
 
-## Where to start
+## 🛠️ Requirements
 
-As you can see, an architecture has already been defined for the project. It is just a suggestion, you can choose to use your own. The predefined architecture includes (in addition to the default angular architecture) the following:
+| Technology      | Version | Description                            |
+|-----------------|---------|----------------------------------------|
+| **Node.js**     | ≥18.x   | JavaScript runtime environment         |
+| **npm**         | Latest  | Package manager (bundled with Node.js) |
+| **Angular CLI** | ≥18.0.3 | Angular command line interface         |
 
-- `components` folder: contains every reusable components
-- `pages` folder: contains components used for routing
-- `core` folder: contains the business logic (`services` and `models` folders)
+## 🚀 Installation
 
-I suggest you to start by understanding this starter code. Pay an extra attention to the `app-routing.module.ts` and the `olympic.service.ts`.
+### 1. Install Node.js
 
-Once mastered, you should continue by creating the typescript interfaces inside the `models` folder. As you can see I already created two files corresponding to the data included inside the `olympic.json`. With your interfaces, improve the code by replacing every `any` by the corresponding interface.
+Download and install Node.js from [nodejs.org](https://nodejs.org)
 
-You're now ready to implement the requested features.
+Verify your installation:
 
-Good luck!
+```bash
+node -v
+npm -v
+```
+
+### 2. Install Angular CLI
+
+Install Angular CLI:
+
+```bash
+npm install -g @angular/cli@18
+```
+
+Verify the installation:
+
+```bash
+ng version
+```
+
+### 3. Clone and setup project
+
+Clone the repository:
+
+```bash
+git clone https://github.com/maximedrouault/TeleSport.git
+```
+
+Navigate to project directory:
+
+```bash
+cd P2_Telesport
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+### 4. Start server
+
+Launch the application:
+
+```bash
+ng serve
+```
+
+## 5. Access the app
+
+Once the development server is running, open your browser and navigate to:
+
+**http://localhost:4200**
+
+The application will automatically reload when you make changes to the source files.
+
+

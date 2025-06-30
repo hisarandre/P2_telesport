@@ -7,7 +7,6 @@ import {StatCardComponent} from '../../components/stat-card/stat-card.component'
 import {LineChartComponent} from '../../components/line-chart/line-chart.component';
 import {ArrowLeft, LucideAngularModule, LucideIconData} from 'lucide-angular';
 import {CommonModule} from '@angular/common';
-import {Olympic} from "../../core/models/Olympic";
 import {LineChart} from "../../core/models/LineChart";
 import {SpinnerComponent} from "../../components/spinner/spinner.component";
 import {ErrorMessageComponent} from "../../components/error-message/error-message.component";
@@ -70,9 +69,9 @@ export class DetailComponent implements OnInit, OnDestroy {
           if (data) {
             this.countryName = data.country;
             this.chartData = this.chartService.transformToLineChartData(data.country, data.participations);
-            this.medalsCount = Olympic.getMedalsCount(data);
-            this.entriesCount = Olympic.getEntriesCount(data);
-            this.athletesCount = Olympic.getAthletesCount(data);
+            this.medalsCount = this.olympicService.getMedalsCount(data);
+            this.entriesCount = this.olympicService.getEntriesCount(data);
+            this.athletesCount = this.olympicService.getAthletesCount(data);
           } else {
             this.router.navigate(['/404']);
           }

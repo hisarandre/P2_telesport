@@ -1,6 +1,6 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, of, tap, throwError} from 'rxjs';
+import {BehaviorSubject, Observable, tap, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Olympic} from '../models/Olympic';
 
@@ -27,7 +27,14 @@ export class OlympicService {
       tap((data: Olympic[]) => this.olympics$.next(data || [])),
       catchError((error: HttpErrorResponse) => {
         console.error('Error loading Olympic data:', error);
-        const message = this.getErrorMessage(error.status)
+
+        let message = 'Failed to load data'
+
+        if (error.status === 0) {
+          message = 'Unable to connect to the server. Please check your internet connection.';
+        } else if (error.status === 404) {
+          message = 'Olympic data file not found.';
+        }
 
         this.olympics$.next([]);
         return throwError(() => new Error(message));
@@ -41,23 +48,7 @@ export class OlympicService {
 
   getCountryById(id: number): Observable<Olympic | null> {
     return this.olympics$.pipe(
-      map(olympics => olympics.find(olympic => olympic.id === id) || null),
-      catchError(() => of(null))
-    );
-  }
-
-  getMedalsByCountries(): Observable<OlympicMedals[]> {
-    return this.olympics$.pipe(
-      map((olympics: Olympic[]) => {
-        if (!olympics?.length) return [];
-
-        return olympics.map((olympic: Olympic) => ({
-          country: olympic.country,
-          medalsCount: Olympic.getMedalsCount(olympic),
-          id: olympic.id
-        }));
-      }),
-      catchError(() => of([]))
+      map(olympics => olympics.find(olympic => olympic.id === id) || null)
     );
   }
 
@@ -77,18 +68,15 @@ export class OlympicService {
     )].sort((a, b) => a - b);
   }
 
-  private getErrorMessage(status: number): string {
-    switch (status) {
-      case 0:
-        return 'No internet connection';
-      case 404:
-        return 'Data not found';
-      case 500:
-        return 'Server error';
-      case 403:
-        return 'Access denied';
-      default:
-        return 'Failed to load data';
-    }
+  getEntriesCount(olympic: Olympic): number {
+    return olympic.participations?.length || 0;
+  }
+
+  getMedalsCount(olympic: Olympic): number {
+    return olympic.participations?.reduce((sum: number, p: any) => sum + (p.medalsCount || 0), 0) || 0;
+  }
+
+  getAthletesCount(olympic: Olympic): number {
+    return olympic.participations?.reduce((sum: number, p: any) => sum + (p.athleteCount || 0), 0) || 0;
   }
 }
