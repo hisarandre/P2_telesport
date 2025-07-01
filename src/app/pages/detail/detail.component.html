@@ -1,46 +1,46 @@
 <main>
-  @if (isLoading) {
-    <app-spinner/>
-  } @else if (hasError) {
-    <app-error-message [message]="errorMessage"/>
-  } @else {
-    <!-- Nav -->
-    <nav class="absolute top-4 left-4">
-      <a routerLink="/" class="inline-flex items-center text-gray-700 hover:text-gray-900">
-        <lucide-icon [img]="ArrowLeft" class="w-8 h-8"></lucide-icon>
-      </a>
-    </nav>
+    @if (isLoading) {
+        <app-spinner/>
+    } @else if (hasError) {
+        <app-error-message [message]="errorMessage"/>
+    } @else {
+        <!-- Nav -->
+        <nav class="absolute top-4 left-4">
+            <a routerLink="/" class="inline-flex items-center text-gray-700 hover:text-gray-900">
+                <lucide-icon [img]="ArrowLeft" class="w-8 h-8"></lucide-icon>
+            </a>
+        </nav>
 
-    <h1>{{ country }}</h1>
+        <h1>{{ country }}</h1>
 
-    <!-- Stats -->
-    <section class="flex w-full justify-center items-center flex-wrap gap-4">
-      <app-stat-card
-        class="w-full sm:w-auto"
-        label="Number of entries"
-        [count]="entriesCount"
-      />
-      <app-stat-card
-        class="w-full sm:w-auto"
-        label="Total number of medals"
-        [count]="medalsCount"
-      />
-      <app-stat-card
-        class="w-full sm:w-auto"
-        label="Total number of athletes"
-        [count]="athletesCount"
-      />
-    </section>
+        <!-- Stats -->
+        <section class="flex w-full justify-center items-center flex-wrap gap-4">
+            <app-stat-card
+                    class="w-full sm:w-auto"
+                    label="Number of entries"
+                    [count]="entriesCount"
+            />
+            <app-stat-card
+                    class="w-full sm:w-auto"
+                    label="Total number of medals"
+                    [count]="medalsCount"
+            />
+            <app-stat-card
+                    class="w-full sm:w-auto"
+                    label="Total number of athletes"
+                    [count]="athletesCount"
+            />
+        </section>
 
-    <!-- Chart-->
-    <section class="w-full h-96 md:h-96 lg:h-[450px]">
-      @if (country && participations && participations.length > 0) {
-        <app-line-chart [country]="country" [participations]="participations"/>
-      } @else {
-        <div class="flex items-center justify-center h-full">
-          <p class="text-gray-500 text-lg">No chart data available</p>
-        </div>
-      }
-    </section>
-  }
+        <!-- Chart-->
+        <section class="w-full h-96 md:h-96 lg:h-[450px]">
+            @if (lineChartData && lineChartData.length > 0) {
+                <app-line-chart [country]="country" [lineChartData]="lineChartData"/>
+            } @else {
+                <div class="flex items-center justify-center h-full">
+                    <p class="text-gray-500 text-lg">No chart data available</p>
+                </div>
+            }
+        </section>
+    }
 </main>

@@ -22,8 +22,11 @@
 
     <!-- Chart -->
     <section class="w-full h-96 md:h-96 lg:h-[450px] ">
-      @if (olympics && olympics.length > 0) {
-        <app-pie-chart [olympics]="olympics"/>
+      @if (chartData && chartData.length > 0) {
+        <app-pie-chart
+          [pieChartData]="chartData"
+          (onSelect)="handlePieChartSelection($event)"
+        />
       } @else {
         <div class="flex items-center justify-center h-full">
           <p class="text-gray-500 text-lg">No chart data available</p>

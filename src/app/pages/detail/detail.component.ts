@@ -6,7 +6,7 @@ import {StatCardComponent} from '../../components/stat-card/stat-card.component'
 import {LineChartComponent} from '../../components/line-chart/line-chart.component';
 import {ArrowLeft, LucideAngularModule, LucideIconData} from 'lucide-angular';
 import {CommonModule} from '@angular/common';
-import {LineChart} from "../../core/models/LineChart";
+import {LineChart, LineChartSeries} from "../../core/models/LineChart";
 import {SpinnerComponent} from "../../components/spinner/spinner.component";
 import {ErrorMessageComponent} from "../../components/error-message/error-message.component";
 import {Participation} from "../../core/models/Participation";
@@ -33,11 +33,10 @@ export class DetailComponent implements OnInit, OnDestroy {
     ArrowLeft: LucideIconData = ArrowLeft;
     countryId!: number;
     country: string = '';
-    participations: Participation[] = [];
+    lineChartData: LineChart[] = [];
     medalsCount: number = 0;
     entriesCount: number = 0;
     athletesCount: number = 0;
-    chartData: LineChart[] = [];
 
     isLoading: boolean = true;
     hasError: boolean = false;
@@ -45,8 +44,8 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     constructor(
         private olympicService: OlympicService,
-        private readonly route: ActivatedRoute,
-        private readonly router: Router
+        private route: ActivatedRoute,
+        private router: Router
     ) {
     }
 
@@ -69,7 +68,7 @@ export class DetailComponent implements OnInit, OnDestroy {
                 next: (data: Olympic | null) => {
                     if (data) {
                         this.country = data.country;
-                        this.participations = data.participations;
+                        this.lineChartData = this.transformToLineChartData(data.country, data.participations);
                         this.medalsCount = this.olympicService.getMedalsCount(data);
                         this.entriesCount = this.olympicService.getEntriesCount(data);
                         this.athletesCount = this.olympicService.getAthletesCount(data);
@@ -88,5 +87,17 @@ export class DetailComponent implements OnInit, OnDestroy {
             });
 
         this.subscriptions.add(olympicSubscription);
+    }
+
+    transformToLineChartData(country: string, participations: Participation[]): LineChart[] {
+        const series: LineChartSeries[] = participations.map((participation: Participation): LineChartSeries => ({
+            name: participation.year.toString(),
+            value: participation.medalsCount
+        }));
+
+        return [{
+            series: series,
+            name: country
+        }];
     }
 }
