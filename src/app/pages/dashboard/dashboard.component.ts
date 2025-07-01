@@ -7,6 +7,8 @@ import {Subscription} from "rxjs";
 import {ErrorMessageComponent} from "../../components/error-message/error-message.component";
 import {SpinnerComponent} from "../../components/spinner/spinner.component";
 import {Olympic} from "../../core/models/Olympic";
+import {PieChart} from "../../core/models/PieChart";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +20,7 @@ import {Olympic} from "../../core/models/Olympic";
 export class DashboardComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
-  olympics: Olympic[] = [];
+  chartData: PieChart[] = [];
   countriesCount: number = 0;
   JOsCount: number = 0;
   isLoading: boolean = true;
@@ -27,6 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private olympicService: OlympicService,
+    private router: Router,
   ) {
   }
 
@@ -47,7 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data: Olympic[]) => {
           if (data && data.length > 0) {
-            this.olympics = data;
+            this.chartData = this.transformToPieChartData(data);
             this.countriesCount = this.olympicService.getCountriesCount(data);
             this.JOsCount = this.olympicService.getJOsCount(data);
           } else {
@@ -65,5 +68,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
 
     this.subscriptions.add(olympicSubscription);
+  }
+
+  transformToPieChartData(data: Olympic[]): PieChart[] {
+    return data.map(item => ({
+      name: item.country,
+      value: this.olympicService.getMedalsCount(item),
+      extra: {id: item.id}
+    }));
+  }
+
+  handlePieChartSelection(data: PieChart): void {
+    if (data?.extra?.id) {
+      this.router.navigate(['/detail', data.extra.id]);
+    }
   }
 }

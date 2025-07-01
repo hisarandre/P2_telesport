@@ -1,8 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Color, NgxChartsModule, ScaleType} from '@swimlane/ngx-charts';
-import {LineChart, LineChartSeries} from '../../core/models/LineChart';
+import {LineChart} from '../../core/models/LineChart';
 import {LucideAngularModule, Medal} from 'lucide-angular';
-import {Participation} from "../../core/models/Participation";
 
 @Component({
     selector: 'app-line-chart',
@@ -12,13 +11,12 @@ import {Participation} from "../../core/models/Participation";
     styleUrl: './line-chart.component.scss'
 })
 
-export class LineChartComponent implements OnInit {
+export class LineChartComponent {
     @Input() country!: string;
-    @Input() participations!: Participation[];
+    @Input() lineChartData!: LineChart[];
 
     medal = Medal;
 
-    lineChartData: LineChart[] = [];
     xAxis: boolean = true;
     yAxis: boolean = true;
     showXAxisLabel: boolean = true;
@@ -30,19 +28,4 @@ export class LineChartComponent implements OnInit {
         domain: ['#0F766E']
     };
 
-    ngOnInit(): void {
-        this.lineChartData = this.transformToLineChartData(this.country, this.participations);
-    }
-
-    transformToLineChartData(country: string, participations: Participation[]): LineChart[] {
-        const series: LineChartSeries[] = participations.map((participation: Participation): LineChartSeries => ({
-            name: participation.year.toString(),
-            value: participation.medalsCount
-        }));
-
-        return [{
-            series: series,
-            name: country
-        }];
-    }
 }
