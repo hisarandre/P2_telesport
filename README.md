@@ -16,8 +16,6 @@ An interactive web application for visualizing Olympic Games statistics and meda
 
 ## 🏗️ Architecture
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
 ```text
 src/app/
 ├── components/    # Reusable UI components
