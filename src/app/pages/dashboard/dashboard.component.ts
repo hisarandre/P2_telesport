@@ -53,9 +53,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.chartData = this.transformToPieChartData(data);
             this.countriesCount = this.olympicService.getCountriesCount(data);
             this.JOsCount = this.olympicService.getJOsCount(data);
-          } else {
-            this.hasError = true;
-            this.errorMessage = 'No data available';
           }
           this.isLoading = false;
         },
